@@ -90,6 +90,33 @@ type LanguageSummary struct {
 	Files              []*FileJob
 }
 
+type LanguageReport struct {
+	SUM    SummaryStruct
+	Header HeaderStruct
+}
+
+// mimic cloc's YAML output
+type LanguageSummaryClocYAML struct {
+	Code    int64
+	Comment int64
+	Blank   int64
+	NFiles  int64 `yaml:"nFiles"`
+}
+
+type SummaryStruct struct {
+	Code    int64
+	Comment int64
+	Blank   int64
+	NFiles  int64 `yaml:"nFiles"`
+}
+
+type HeaderStruct struct {
+	Version         string
+	Elapsed_seconds float64 `yaml:"elapsed_seconds"`
+	NFiles          int64   `yaml:"nFiles"`
+	NLines          int64   `yaml:"nLines"`
+}
+
 // OpenClose is used to hold an open/close pair for matching such as multi line comments
 type OpenClose struct {
 	Open  []byte

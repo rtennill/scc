@@ -66,36 +66,8 @@ func sortSummaryFiles(summary *LanguageSummary) {
 	}
 }
 
-// LanguageSummary to generate output like cloc
-type LanguageSummaryCloc struct {
-	Name    string
-	Code    int64
-	Comment int64
-	Blank   int64
-	Count   int64
-}
-
-type SummaryStruct struct {
-	Code    int64
-	Comment int64
-	Blank   int64
-	Count   int64
-}
-
-type HeaderStruct struct {
-	Version         string
-	Elapsed_seconds float32
-	N_files         int64
-	N_lines         int64
-}
-
-type LanguageReport struct {
-	SUM    SummaryStruct
-	Header HeaderStruct
-}
-
 func toClocYAML(input chan *FileJob) string {
-	languages := map[string]LanguageSummaryCloc{}
+	languages := map[string]LanguageSummaryClocYAML{}
 	var sumFiles, sumLines, sumCode, sumComment, sumBlank, sumComplexity int64 = 0, 0, 0, 0, 0, 0
 
 	for res := range input {
@@ -109,37 +81,37 @@ func toClocYAML(input chan *FileJob) string {
 		_, ok := languages[res.Language]
 
 		if !ok {
-			languages[res.Language] = LanguageSummaryCloc{
-				Name:    res.Language,
+			languages[res.Language] = LanguageSummaryClocYAML{
 				Code:    res.Code,
 				Comment: res.Comment,
 				Blank:   res.Blank,
-				Count:   1,
+				NFiles:  1,
 			}
 		} else {
 			tmp := languages[res.Language]
 
-			languages[res.Language] = LanguageSummaryCloc{
-				Name:    res.Language,
+			languages[res.Language] = LanguageSummaryClocYAML{
 				Code:    tmp.Code + res.Code,
 				Comment: tmp.Comment + res.Comment,
 				Blank:   tmp.Blank + res.Blank,
-				Count:   tmp.Count + 1,
+				NFiles:  tmp.NFiles + 1,
 			}
 		}
 	}
 
 	header := HeaderStruct{
-		Version: "1.0.0",
-		N_files: sumFiles,
-		N_lines: sumLines,
+		Version:         "2.5.0",
+		NFiles:          sumFiles,
+		NLines:          sumLines,
 	}
+
 	summary := SummaryStruct{
 		Blank:   sumBlank,
 		Comment: sumComment,
 		Code:    sumCode,
-		Count:   sumFiles,
+		NFiles:  sumFiles,
 	}
+
 	report := LanguageReport{
 		Header: header,
 		SUM:    summary,
