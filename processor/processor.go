@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 )
 
 // Flags set via the CLI which control how the output is displayed
@@ -108,6 +109,9 @@ var LanguageFeatures = map[string]LanguageFeature{}
 // LanguageFeaturesMutex is the shared mutex used to control getting and setting of language features
 // used rather than sync.Map because it turned out to be marginally faster
 var LanguageFeaturesMutex = sync.Mutex{}
+
+// for measuring overall processing time
+var StartTime = time.Now()
 
 // ConfigureGc needs to be set outside of ProcessConstants because it should only be enabled in command line
 // mode https://github.com/boyter/scc/issues/32
