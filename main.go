@@ -8,6 +8,11 @@ import (
 
 //go:generate go run scripts/include.go
 func main() {
+	const version = "2.6.0"
+
+	// include in text output in some formats
+	processor.Version = version
+
 	//f, _ := os.Create("scc.pprof")
 	//pprof.StartCPUProfile(f)
 	//defer pprof.StopCPUProfile()
@@ -16,7 +21,7 @@ func main() {
 		Use:     "scc",
 		Short:   "scc [FILE or DIRECTORY]",
 		Long:    "Sloc, Cloc and Code. Count lines of code in a directory with complexity estimation.\nBen Boyter <ben@boyter.org> + Contributors",
-		Version: "2.6.0",
+		Version: version,
 		Run: func(cmd *cobra.Command, args []string) {
 			processor.DirFilePaths = args
 			processor.ConfigureGc()
@@ -86,7 +91,7 @@ func main() {
 		"format",
 		"f",
 		"tabular",
-		"set output format [tabular, wide, json, csv, cloc-yaml]",
+		"set output format [tabular, wide, json, csv, cloc-yml]",
 	)
 	flags.StringSliceVarP(
 		&processor.WhiteListExtensions,

@@ -100,7 +100,7 @@ func toClocYAML(input chan *FileJob) string {
 	}
 
 	header := HeaderStruct{
-		Version:         "2.5.0",
+		Version:         Version,
 		NFiles:          sumFiles,
 		NLines:          sumLines,
 		Elapsed_seconds: time.Since(StartTime).Seconds(),
