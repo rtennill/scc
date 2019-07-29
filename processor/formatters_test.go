@@ -1,9 +1,13 @@
 package processor
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
+
+var version = "TEST"
+var version_check = fmt.Sprintf("version: %s", version)
 
 func TestPrintTrace(t *testing.T) {
 	Trace = true
@@ -221,20 +225,24 @@ func TestToJSONMultiple(t *testing.T) {
 func TestToYAMLEmpty(t *testing.T) {
 	inputChan := make(chan *FileJob, 1000)
 	close(inputChan)
+	NoElapsedTime = true
+	Version = version
 	res := toClocYAML(inputChan)
-
-	if res != `sum:
+	NoElapsedTime = false
+	check_string := fmt.Sprintf(`sum:
   code: 0
   comment: 0
   blank: 0
-  count: 0
+  nFiles: 0
 header:
-  version: 1.0.0
+  version: %s
   elapsed_seconds: 0
-  n_files: 0
-  n_lines: 0
+  nFiles: 0
+  nLines: 0
 {}
-` {
+`, version)
+
+	if res != check_string {
 		t.Error("Expected empty YAML return", res)
 	}
 }
@@ -257,10 +265,13 @@ func TestToYAMLSingle(t *testing.T) {
 	}
 	close(inputChan)
 	Debug = true // Increase coverage slightly
+	NoElapsedTime = true
+	Version = version
 	res := toClocYAML(inputChan)
+	NoElapsedTime = false
 	Debug = false
 
-	if !strings.Contains(res, `version: 1.0.0`) || !strings.Contains(res, `n_lines: 1000`) {
+	if !strings.Contains(res, version_check) || !strings.Contains(res, `nLines: 1000`) {
 		t.Error("Expected YAML return", res)
 	}
 }
@@ -297,11 +308,14 @@ func TestToYAMLMultiple(t *testing.T) {
 	}
 	close(inputChan)
 	Debug = true // Increase coverage slightly
+	NoElapsedTime = true
+	Version = version
 	res := toClocYAML(inputChan)
+	NoElapsedTime = false
 	Debug = false
 
-	if !strings.Contains(res, `code: 2000`) || !strings.Contains(res, `n_lines: 2000`) {
-		t.Error("Expected JSON return", res)
+	if !strings.Contains(res, `code: 2000`) || !strings.Contains(res, `nLines: 2000`) {
+		t.Error("Expected YAML return", res)
 	}
 }
 

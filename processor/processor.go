@@ -115,6 +115,9 @@ var StartTime = time.Now()
 
 var Version = ""
 
+// disable elapsed time measurement for unit testing
+var NoElapsedTime = false
+
 // ConfigureGc needs to be set outside of ProcessConstants because it should only be enabled in command line
 // mode https://github.com/boyter/scc/issues/32
 func ConfigureGc() {
